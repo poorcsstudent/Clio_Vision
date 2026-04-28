@@ -7,7 +7,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cliovision.data.mock.MockTours
 import com.example.cliovision.ui.screens.home.HomeScreen
 import com.example.cliovision.ui.screens.live.LiveTourScreen
-import com.example.cliovision.ui.screens.onboarding.OnboardingScreen
+import com.example.cliovision.ui.screens.pair.PairScreen
+import com.example.cliovision.ui.screens.profile.ProfileScreen
 import com.example.cliovision.ui.screens.summary.TourSummaryScreen
 import com.example.cliovision.ui.screens.tours.TourDetailScreen
 import com.example.cliovision.ui.screens.tours.TourListScreen
@@ -18,13 +19,13 @@ fun AppNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.ONBOARDING
+        startDestination = Routes.PAIR
     ) {
-        composable(Routes.ONBOARDING) {
-            OnboardingScreen(
-                onGetStarted = {
+        composable(Routes.PAIR) {
+            PairScreen(
+                onPaired = {
                     navController.navigate(Routes.HOME) {
-                        popUpTo(Routes.ONBOARDING) { inclusive = true }
+                        popUpTo(Routes.PAIR) { inclusive = true }
                     }
                 }
             )
@@ -32,7 +33,8 @@ fun AppNavGraph() {
 
         composable(Routes.HOME) {
             HomeScreen(
-                onStartTour = { navController.navigate(Routes.TOURS) }
+                onToursClick = { navController.navigate(Routes.TOURS) },
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) }
             )
         }
 
@@ -41,7 +43,8 @@ fun AppNavGraph() {
                 tours = MockTours.tours,
                 onTourClick = { tourId ->
                     navController.navigate("${Routes.TOUR_DETAIL}/$tourId")
-                }
+                },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -70,6 +73,12 @@ fun AppNavGraph() {
                     onEndTour = { navController.navigate(Routes.SUMMARY) }
                 )
             }
+        }
+
+        composable(Routes.SETTINGS) {
+            ProfileScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.SUMMARY) {
